@@ -4,15 +4,17 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     image: mysql:5.7
+    platform: linux/x86_64
     ports:
         - "33306:3306"
-    # command: --init-file /data/application/init.sql
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
-    # volumes:
-        # - "database_data:/var/lib/mysql"
-        # - ./init.sql:/data/application/init.sql
+    volumes:
+        - mysql-data:/var/lib/mysql
+        - ./mysql-dump:/docker-entrypoint-initdb.d
     environment:
         MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: guestbook
 ###< doctrine/doctrine-bundle ###
   adminer:
     image: adminer
@@ -23,7 +25,6 @@ services:
       - database
     ports:
       - 8080:8080
-# volumes:
+volumes:
+  mysql-data:
 ###> doctrine/doctrine-bundle ###
-  # database_data:
-###< doctrine/doctrine-bundle ###
