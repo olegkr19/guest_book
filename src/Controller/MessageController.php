@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Message;
-use App\Repository\MessageRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -29,27 +28,39 @@ class MessageController extends AbstractController
     }
 
     #[Route('/', name: 'message_list')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
         $form = $this->getForm();
 
+        $conn = $entityManager->getConnection();
+
+        $sql = '
+            SELECT id, username, email, homepage, text 
+            FROM message
+            ORDER BY id DESC
+        ';
+
+        $messages = $conn->executeQuery($sql)->fetchAllAssociative();
+
         return $this->render('message/index.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'messages' => $messages
         ]);
     }
 
     #[Route('/messages/add', name: 'message_add')]
-    public function add(Request $request, MessageRepository $doctrine): Response
+    public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $message = $form->getData();
-            // $messages = $doctrine->getManager();
-            $doctrine->persist($message);
-            $doctrine->flush();
+            $messageData = $form->getData();
+
+            $entityManager->persist($messageData);
+
+            $entityManager->flush();
 
             //Add a flash message
             $this->addFlash('success', 'Your message has been added');
