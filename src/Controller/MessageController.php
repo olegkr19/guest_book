@@ -6,6 +6,7 @@ use App\Entity\Message;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +18,16 @@ class MessageController extends AbstractController
     private function getForm()
     {
         $message = new Message();
+        $dateTime = new \DateTimeImmutable();
 
         return $this->createFormBuilder($message)
         ->add('username')
         ->add('email', EmailType::class)
         ->add('homepage')
         ->add('text', TextareaType::class)
+        ->add('created_at', HiddenType::class, [
+            'data' => $dateTime->format('Y-m-d H:i:s')
+        ])
         ->add('save', SubmitType::class)
         ->getForm();
     }
@@ -34,8 +39,9 @@ class MessageController extends AbstractController
 
         $conn = $entityManager->getConnection();
 
+        
         $sql = '
-            SELECT id, username, email, homepage, text 
+            SELECT id, username, email, homepage, text, created_at
             FROM message
             ORDER BY id DESC
         ';

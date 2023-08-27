@@ -8,14 +8,40 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <title>{% block title %}Guestbook{% endblock %}</title>
-        <h1 style="text-align: center;"><a href="{{ path('message_list') }}">Guestbook</a></h1>
+        <div>
+            <h1 style="text-align: center;">Guestbook   </h1>
+            <div class="text-4xl ml-4">
+                <a href="{{ path('message_list') }}">Home</a>   
+            </div>
+
+            <div class="text-right">
+                <div class="text-sm text-gray-500 dark:text-gray-400 flex">
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <div class="mr-4">
+                        <a href="{{ path('app_micro_post_add') }}">Add New</a>
+                    </div>
+                    <div class="mr-4">
+                        <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                    {% else %}
+                    <div class="mr-4">
+                        <a href="{{ path('app_login') }}">Login</a>
+                    </div>
+                    <div class="mr-4">
+                        <a href="{{ path('app_register') }}">Register</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         {% for message in app.flashes('success') %}
             <div style="color: green">{{ message }}</div>
         {% endfor %}
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
-
         {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

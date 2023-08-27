@@ -3,20 +3,20 @@
 
 {% block body %}
 <style>
-   .add {
-    float: right;
-    margin-right: 20px;
-    margin-bottom: 10px;
-   }
-   .table {
-    margin-top: 10px;
-   }
+    .add {
+        float: right;
+        margin-right: 20px;
+        margin-bottom: 10px;
+    }
+    .table {
+        margin-top: 10px;
+    }
 </style>
 
 <div class="main">
     <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add message</button>
     {% include './modals/add_message.html.twig' %}
-    <table class="table">
+    <table class="table table-hover table-bordered">
     <thead class="thead-dark">
         <tr>
         <th scope="col">#</th>
@@ -24,6 +24,7 @@
         <th scope="col">Email</th>
         <th scope="col">Homepage</th>
         <th scope="col">Text</th>
+        <th scope="col">Datetime</th>
         </tr>
     </thead>
     <tbody>
@@ -34,9 +35,13 @@
             <td>{{ message.email }}</td>
             <td>{{ message.homepage ?: '-' }}</td>
             <td>{{ message.text }}</td>
+            <td>{{ message.created_at }}</td>
         </tr>
         {% endfor %}
     </tbody>
     </table>
 </div>
+<script>
+    
+</script>
 {% endblock %}
