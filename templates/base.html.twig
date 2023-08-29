@@ -9,7 +9,7 @@
 
         <title>{% block title %}Guestbook{% endblock %}</title>
         <div>
-            <h1 style="text-align: center;">Guestbook   </h1>
+            <h1 style="text-align: center;">Guestbook</h1>
             <div class="text-4xl ml-4">
                 <a href="{{ path('message_list') }}">Home</a>   
             </div>
@@ -18,7 +18,8 @@
                 <div class="text-sm text-gray-500 dark:text-gray-400 flex">
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <div class="mr-4">
-                        <a href="{{ path('app_micro_post_add') }}">Add New</a>
+                        <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add message</button>
+                        {# <a href="{{ path('app_micro_post_add') }}">Add Message</a> #}
                     </div>
                     <div class="mr-4">
                         <a href="{{ path('app_logout') }}">Logout</a>
