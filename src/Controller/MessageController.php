@@ -39,14 +39,25 @@ class MessageController extends AbstractController
 
         $conn = $entityManager->getConnection();
 
+        $where = 'id > 0';
+
+        $prepareData = [];
+
+        $user = $this->getUser();
+
+        if (isset($user) && $user) {
+            $where .= ' AND email = :email';
+            $prepareData['email'] = $this->getUser()->getUserIdentifier();
+        }
         
         $sql = '
             SELECT id, username, email, homepage, text, created_at
             FROM message
+            WHERE '. $where .'
             ORDER BY id DESC
         ';
 
-        $messages = $conn->executeQuery($sql)->fetchAllAssociative();
+        $messages = $conn->prepare($sql)->executeQuery($prepareData)->fetchAllAssociative();
 
         return $this->render('message/index.html.twig', [
             'form' => $form,

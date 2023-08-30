@@ -28,16 +28,22 @@
         </tr>
     </thead>
     <tbody>
-        {% for message in messages %}
+        {% if messages %}
+            {% for message in messages %}
+            <tr>
+                <th scope="row">{{ message.id }}</th>
+                <td>{{ message.username }}</td>
+                <td>{{ message.email }}</td>
+                <td>{{ message.homepage ?: '-' }}</td>
+                <td>{{ message.text }}</td>
+                <td>{{ message.created_at }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
         <tr>
-            <th scope="row">{{ message.id }}</th>
-            <td>{{ message.username }}</td>
-            <td>{{ message.email }}</td>
-            <td>{{ message.homepage ?: '-' }}</td>
-            <td>{{ message.text }}</td>
-            <td>{{ message.created_at }}</td>
+        <th scope="row" colspan="6" style="text-align: center;">Data not found</th>
         </tr>
-        {% endfor %}
+        {% endif %}
     </tbody>
     </table>
 </div>
