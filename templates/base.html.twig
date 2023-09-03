@@ -7,6 +7,8 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous">
+
         <title>{% block title %}Guestbook{% endblock %}</title>
         <div>
             <h1 style="text-align: center;">Guestbook</h1>
@@ -18,7 +20,7 @@
                 <div class="text-sm text-gray-500 dark:text-gray-400 flex">
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <div class="mr-4">
-                        <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add message</button>
+                        <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#addMessageModal" data-whatever="@mdo">Add message</button>
                     </div>
                     <div class="mr-4"> 
                         {# <button type="button" class="btn btn-secondary">Logout</button> #}

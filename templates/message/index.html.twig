@@ -16,6 +16,7 @@
 <div class="main">
     {# <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add message</button> #}
     {% include './modals/add_message.html.twig' %}
+    {# {% include './modals/edit_message.html.twig' with {'message': {'id': 1}} %} #}
     <table class="table table-hover table-bordered" 
     id="table"
     data-toggle="table"
@@ -37,7 +38,9 @@
         <th scope="col" data-field="homepage" data-sortable="true">Homepage</th>
         <th scope="col" data-field="text" data-sortable="true">Text</th>
         <th scope="col" data-field="datetime" data-sortable="true">Datetime</th>
-        <th scope="col" >Actions</th>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <th scope="col">Actions</th>
+        {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -50,27 +53,25 @@
                 <td>{{ message.homepage ?: '-' }}</td>
                 <td>{{ message.text }}</td>
                 <td>{{ message.created_at }}</td>
-                <td><span class="glyphicon glyphicon-search" aria-hidden="true"></span></td>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                {# {% include './modals/edit_message.html.twig' with {'id': message.id} %} #}
+                <td>
+                <button type="button" class="btn" data-toggle="modal" data-target="#editMessageModal">
+                <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
+                </button>
+                <i class="fa-solid fa-trash fa-xl" style="color: #ff0000;margin-left:10px;"></i>
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
         {% else %}
         <tr>
-        <th scope="row" colspan="6" style="text-align: center;">Data not found</th>
+        <th scope="row" colspan="7" style="text-align: center;">Data not found</th>
         </tr>
         {% endif %}
     </tbody>
     </table>
 </div>
 <script>
-    // function TableActions (value, row, index) {
-    // return [
-    //     '<a class="like" href="javascript:void(0)" title="Edit">',
-    //     '<span class="glyphicon glyphicon-pencil"></span>',
-    //     '</a> ',
-    //     '<a class="danger remove" href="javascript:void(0)" data-messageserial="'+row.+'" data-username="'+row.username+'" data-messageid="'+row.message_id+'" data-toggle="modal" data-target="#MessageDelete" title="Remove">',
-    //     '<span class="glyphicon glyphicon-trash"></span>',
-    //     '</a>'
-    // ].join('');
-// }
 </script>
 {% endblock %}

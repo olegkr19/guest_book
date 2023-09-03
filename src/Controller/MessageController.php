@@ -15,9 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MessageController extends AbstractController
 {
-    private function getForm()
+    private function getForm(Message $message)
     {
-        $message = new Message();
         $dateTime = new \DateTimeImmutable();
 
         return $this->createFormBuilder($message)
@@ -35,7 +34,9 @@ class MessageController extends AbstractController
     #[Route('/', name: 'message_list')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $form = $this->getForm();
+        $message = new Message();
+
+        $form = $this->getForm($message);
 
         $conn = $entityManager->getConnection();
 
@@ -68,7 +69,9 @@ class MessageController extends AbstractController
     #[Route('/messages/add', name: 'message_add')]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->getForm();
+        $message = new Message();
+
+        $form = $this->getForm($message);
 
         $form->handleRequest($request);
 
@@ -84,5 +87,34 @@ class MessageController extends AbstractController
         }
 
         return $this->redirectToRoute('message_list');
+    }
+
+    #[Route('/messages/edit/{id}', name: 'message_edit')]
+    public function edit($id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        dd($id);
+        $message = new Message();
+
+        $form = $this->getForm($message);
+
+        // $form = $this->createForm(
+        //     MessageType::class,
+        //     $message
+        // );
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $messageData = $form->getData();
+
+            $entityManager->persist($messageData);
+
+            $entityManager->flush();
+
+            //Add a flash message
+            $this->addFlash('success', 'Your message has been updated');
+
+            return $this->redirectToRoute('message_list');
+        }
     }
 }
