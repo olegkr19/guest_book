@@ -16,15 +16,28 @@
 <div class="main">
     {# <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add message</button> #}
     {% include './modals/add_message.html.twig' %}
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered" 
+    id="table"
+    data-toggle="table"
+    data-pagination="true"
+    data-url="data/RegisteredVisitors.json"
+    data-show-refresh="true"
+    data-show-toggle="true"
+    data-show-columns="true"
+    data-search="true"                          
+    data-show-pagination-switch="true"
+    data-id-field="message_id"
+    {# data-page-list="[10, 25, 50, 100, ALL]" #}
+    data-show-footer="false">
     <thead class="thead-dark">
         <tr>
-        <th scope="col">#</th>
-        <th scope="col">Username</th>
-        <th scope="col">Email</th>
-        <th scope="col">Homepage</th>
-        <th scope="col">Text</th>
-        <th scope="col">Datetime</th>
+        <th scope="col" data-field="message_id">#</th>
+        <th scope="col" data-field="username" data-sortable="true">Username</th>
+        <th scope="col" data-field="email" data-sortable="true">Email</th>
+        <th scope="col" data-field="homepage" data-sortable="true">Homepage</th>
+        <th scope="col" data-field="text" data-sortable="true">Text</th>
+        <th scope="col" data-field="datetime" data-sortable="true">Datetime</th>
+        <th scope="col" >Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -37,6 +50,7 @@
                 <td>{{ message.homepage ?: '-' }}</td>
                 <td>{{ message.text }}</td>
                 <td>{{ message.created_at }}</td>
+                <td><span class="glyphicon glyphicon-search" aria-hidden="true"></span></td>
             </tr>
             {% endfor %}
         {% else %}
@@ -48,6 +62,15 @@
     </table>
 </div>
 <script>
-    
+    // function TableActions (value, row, index) {
+    // return [
+    //     '<a class="like" href="javascript:void(0)" title="Edit">',
+    //     '<span class="glyphicon glyphicon-pencil"></span>',
+    //     '</a> ',
+    //     '<a class="danger remove" href="javascript:void(0)" data-messageserial="'+row.+'" data-username="'+row.username+'" data-messageid="'+row.message_id+'" data-toggle="modal" data-target="#MessageDelete" title="Remove">',
+    //     '<span class="glyphicon glyphicon-trash"></span>',
+    //     '</a>'
+    // ].join('');
+// }
 </script>
 {% endblock %}
