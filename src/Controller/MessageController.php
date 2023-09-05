@@ -117,4 +117,19 @@ class MessageController extends AbstractController
             return $this->redirectToRoute('message_list');
         }
     }
+
+    #[Route('/messages/delete/{id}', name: 'message_delete')]
+    public function delete($id, EntityManagerInterface $entityManager): Response
+    {
+        $message = $entityManager->getRepository(Message::class)->find($id);
+    
+        $entityManager->remove($message);
+    
+        $entityManager->flush();
+
+        //Add a flash message
+        $this->addFlash('success', 'Your message has been deleted');
+
+        return $this->redirectToRoute('message_list');
+    }
 }

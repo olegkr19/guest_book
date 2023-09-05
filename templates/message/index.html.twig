@@ -14,19 +14,20 @@
 </style>
 
 <div class="main">
-    {# <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add message</button> #}
-    {# {% include './modals/add_message.html.twig' %} #}
-    {% include './modals/message_modal.html.twig' with {
+   <button type="button" class="btn add" data-toggle="modal" data-target="#addMessageModal" data-whatever="@mdo">
+    <i class="fa-solid fa-plus fa-2xl" style="color: #000000;"></i>
+   </button>
+    {% include './modals/add_message.html.twig' %}
+    {# {% include './modals/message_modal.html.twig' with {
         'messageModal': 'addMessageModal',
         'messageModalLabel': 'addMessageModalLabel',
         'messageText': 'New message',
         'messagePath': 'message_add'
-    } %}
+    } %} #}
     <table class="table table-hover table-bordered" 
     id="table"
     data-toggle="table"
     data-pagination="true"
-    data-url="data/RegisteredVisitors.json"
     data-show-refresh="true"
     data-show-toggle="true"
     data-show-columns="true"
@@ -35,7 +36,7 @@
     data-id-field="message_id"
     {# data-page-list="[10, 25, 50, 100, ALL]" #}
     data-show-footer="false">
-    <thead class="thead-dark">
+    <thead style="font-style: italic;" class="thead-dark">
         <tr>
         <th scope="col" data-field="message_id">#</th>
         <th scope="col" data-field="username" data-sortable="true">Username</th>
@@ -59,18 +60,22 @@
                 <td>{{ message.text }}</td>
                 <td>{{ message.created_at }}</td>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                {% include './modals/message_modal.html.twig' with {
+                {# {% include './modals/message_modal.html.twig' with {
                     'messageModal': 'editMessageModal',
                     'messageModalLabel': 'editMessageModalLabel',
                     'messageText': 'Edit message',
                     'messagePath': 'message_edit',
                     'messageData': {'id': message.id}
-                } %}
+                } %} #}
                 <td>
-                <button type="button" class="btn" data-toggle="modal" data-target="#editMessageModal">
-                <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
+                {% include './modals/edit_message.html.twig' with {'id': message.id} %}
+                <button type="button" class="btn" data-toggle="modal" data-target="#editMessageModal" data-whatever="@mdo">
+                    <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
                 </button>
-                <i class="fa-solid fa-trash fa-xl" style="color: #ff0000;margin-left:10px;"></i>
+                    {% include './modals/delete_message.html.twig' with {'id': message.id} %}
+                    <button type="button" class="btn" data-toggle="modal" data-target="#deleteMessageModal" data-whatever="@mdo">
+                        <i class="fa-solid fa-trash fa-xl" style="color: #ff0000;"></i>
+                    </button>
                 </td>
                 {% endif %}
             </tr>

@@ -11,30 +11,23 @@
 
         <title>{% block title %}Guestbook{% endblock %}</title>
         <div>
-            <h1 style="text-align: center;">Guestbook</h1>
-            <div class="text-4xl ml-4">
-                <a href="{{ path('message_list') }}">Home</a>   
-            </div>
-
-            <div class="text-right">
-                <div class="text-sm text-gray-500 dark:text-gray-400 flex">
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <div class="mr-4">
-                        <button type="button" class="btn btn-secondary add" data-toggle="modal" data-target="#addMessageModal" data-whatever="@mdo">Add message</button>
-                    </div>
-                    <div class="mr-4"> 
-                        {# <button type="button" class="btn btn-secondary">Logout</button> #}
-                        <a class="text-4xl mr-4" href="{{ path('app_logout') }}">Logout</a>
-                    </div>
-                    {% else %}
-                    <div class="mr-4">
-                        <a href="{{ path('app_login') }}">Login</a>
-                    </div>
-                    <div class="mr-4">
-                        <a href="{{ path('app_register') }}">Register</a>
-                    </div>
-                    {% endif %}
-                </div>
+            <div>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a style="color: #000000;" class="ml-2" href="{{ path('message_list') }}">
+                        <i style="margin-top: 20px;" class="fa-solid fa-house fa-2xl" style="color: #000000;"></i>
+                    </a> 
+                    <a style="color: #000000;" class="float-right mr-4 mt-2" href="{{ path('app_logout') }}">
+                        <i class="fa-solid fa-right-from-bracket fa-2xl" style="color: #000000;"></i>
+                    </a>
+                {% else %}
+                    <a style="color: #000000;" class="ml-2" href="{{ path('app_register') }}">
+                        <i style="margin-top: 20px;" class="fa-solid fa-user-plus fa-2xl" style="color: #000000;"></i>
+                    </a> 
+                    <a style="color: #000000;" class="float-right mr-4 mt-2" href="{{ path('app_login') }}">
+                        <i class="fa-solid fa-right-to-bracket fa-2xl" style="color: #000000;"></i>
+                    </a>
+                {% endif %}
+                <h1 style="font-style: italic;" class="text-center">Guestbook</h1>
             </div>
         </div>
         {% for message in app.flashes('success') %}
