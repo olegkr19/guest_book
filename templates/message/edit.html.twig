@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editing an Existing Message
+{% endblock %}
+
+{% block body %}
+
+	<div style="font-style: italic;">
+		<form action="{{ path('message_edit', {"id": message.id})}}" method="post">
+			<div class="form-group col-md-4">
+				<label for="username" class="col-form-label">Username:</label>
+				<input type="text" class="form-control" id="username" name="_username" value="{{message.username}}" required>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="email" class="col-form-label">Email:</label>
+				<input class="form-control" type="email" id="email" name="_email" value="{{message.email}}" required="" oninvalid="this.setCustomValidity('Please Enter valid email')" oninput="setCustomValidity('')"></input>
+		</div>
+		<div class="form-group col-md-4">
+			<label for="homepage" class="col-form-label">Homepage:</label>
+			<input type="url" class="form-control" id="homepage" name="_homepage" value="{{message.homepage}}" oninput="setCustomValidity('')">
+		</div>
+		<div class="form-group col-md-6">
+			<label for="message-text" class="col-form-label">Text:</label>
+			<textarea class="form-control" id="message-text" name="_text" required>{{message.text}}</textarea>
+		</div>
+		<div class="col-auto">
+			<button type="submit" class="btn btn-primary">Edit message</button>
+			<div></form>
+		</div>
+{% endblock %}

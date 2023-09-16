@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,53 @@ class MessageRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+    * @return array Returns an array
+    */
+    public function findAllMessages(): array
+    {
+
+        $entityManager = $this->getEntityManager();
+
+        $conn = $entityManager->getConnection();
+
+        $where = 'id > 0';
+
+        $prepareData = [];
+
+        $sql = '
+            SELECT id, username, email, homepage, text, created_at
+            FROM message
+            WHERE '. $where .'
+            ORDER BY id DESC
+        ';
+
+        return $conn->prepare($sql)->executeQuery($prepareData)->fetchAllAssociative();
+    }
+
+    /**
+     * @return array Returns an array
+     */
+    public function findAllMessagesByUser(User $user)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $conn = $entityManager->getConnection();
+
+        $where = 'email = :email';
+
+        $prepareData = [
+            'email' => $user->getUserIdentifier()
+        ];
+        
+        $sql = '
+            SELECT id, username, email, homepage, text, created_at
+            FROM message
+            WHERE '. $where .'
+            ORDER BY id DESC
+        ';
+
+        return $conn->prepare($sql)->executeQuery($prepareData)->fetchAllAssociative();
+    }
 }

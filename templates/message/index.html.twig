@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
 
 {% block body %}
 <style>
@@ -14,16 +13,10 @@
 </style>
 
 <div class="main">
-   <button type="button" class="btn add" data-toggle="modal" data-target="#addMessageModal" data-whatever="@mdo">
-    <i class="fa-solid fa-plus fa-2xl" style="color: #000000;"></i>
-   </button>
     {% include './modals/add_message.html.twig' %}
-    {# {% include './modals/message_modal.html.twig' with {
-        'messageModal': 'addMessageModal',
-        'messageModalLabel': 'addMessageModalLabel',
-        'messageText': 'New message',
-        'messagePath': 'message_add'
-    } %} #}
+   <button type="button" class="btn add" data-toggle="modal" data-target="#addMessageModal" data-whatever="@mdo">
+        <i class="fa-solid fa-plus fa-2xl" style="color: #000000;"></i>
+   </button>
     <table class="table table-hover table-bordered" 
     id="table"
     data-toggle="table"
@@ -60,29 +53,26 @@
                 <td>{{ message.text }}</td>
                 <td>{{ message.created_at }}</td>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                {# {% include './modals/message_modal.html.twig' with {
-                    'messageModal': 'editMessageModal',
-                    'messageModalLabel': 'editMessageModalLabel',
-                    'messageText': 'Edit message',
-                    'messagePath': 'message_edit',
-                    'messageData': {'id': message.id}
-                } %} #}
-                <td>
-                {% include './modals/edit_message.html.twig' with {'id': message.id} %}
-                <button type="button" class="btn" data-toggle="modal" data-target="#editMessageModal" data-whatever="@mdo">
-                    <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
-                </button>
-                    {% include './modals/delete_message.html.twig' with {'id': message.id} %}
-                    <button type="button" class="btn" data-toggle="modal" data-target="#deleteMessageModal" data-whatever="@mdo">
-                        <i class="fa-solid fa-trash fa-xl" style="color: #ff0000;"></i>
-                    </button>
-                </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form action="{{ path('message_card', {"id": message.id})}}" method="get">
+                                <button type="submit" class="btn">
+                                    <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
+                                </button>
+                            </form> 
+                            <form action="{{ path('message_delete', {"id": message.id})}}" method="get">
+                                <button type="submit" class="btn" style="margin-left: 10px;">
+                                    <i class="fa-solid fa-trash fa-xl" style="color: #ff0000;"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                 {% endif %}
             </tr>
             {% endfor %}
         {% else %}
         <tr>
-        <th scope="row" colspan="7" style="text-align: center;">Data not found</th>
+            <th scope="row" colspan="7" style="text-align: center;">Data not found</th>
         </tr>
         {% endif %}
     </tbody>

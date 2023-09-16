@@ -1,15 +1,36 @@
 <div class="modal fade" id="editMessageModal" tabindex="-1" role="dialog" aria-labelledby="editMessageModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editMessageModalLabel">Edit message</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        {# {{ form(form, {'action': path('message_edit', {'id': message.id}) }) }} #}
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editMessageModalLabel">Edit message # {{message.id}}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="{{ path('message_edit', {"id": message.id})}}" method="post">
+					<div class="form-group">
+						<label for="username" class="col-form-label">Username:</label>
+						<input type="text" class="form-control" id="username" name="_username" value="{{message.username}}" required>
+					</div>
+					<div class="form-group">
+						<label for="email" class="col-form-label">Email:</label>
+						<input class="form-control" type="email" id="email" name="_email" value="{{message.email}}" required="" oninvalid="this.setCustomValidity('Please Enter valid email')" oninput="setCustomValidity('')"></input>
+				</div>
+				<div class="form-group">
+					<label for="homepage" class="col-form-label">Homepage:</label>
+					<input type="url" class="form-control" id="homepage" name="_homepage" value="{{message.homepage}}" oninput="setCustomValidity('')">
+				</div>
+				<div class="form-group">
+					<label for="message-text" class="col-form-label">Text:</label>
+					<textarea class="form-control" id="message-text" name="_text" required>{{message.text}}</textarea>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary">Edit message</button>
+			</div>
+		</form>
+	</div>
+</div>
 </div>
