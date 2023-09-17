@@ -1,0 +1,11 @@
+{# templates/YourEntityAdmin/list.html.twig #}
+
+{% extends '@SonataAdmin/CRUD/base_list.html.twig' %}
+
+{% block actions_batch %}
+    <form action="{{ admin.generateUrl('batchChangeFieldValue') }}" method="post">
+        {{ form_widget(form.block) }}
+        <button type="submit" class="btn btn-sm btn-primary">Change Field Value</button>
+        {{ form_rest(form) }}
+    </form>
+{% endblock %}

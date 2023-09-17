@@ -1,0 +1,5 @@
+{% block field %}
+    {% for role in object.getRoles() %}
+        <span class="badge badge-primary">{{ role }}</span>
+    {% endfor %}
+{% endblock %}

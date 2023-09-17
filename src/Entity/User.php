@@ -29,6 +29,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    /**
+     * This method determines how the entity is represented as a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getEmail();
+    }
+
+    /**
+     * @ORM\Column(name="block", type="boolean", options={"default":0})
+     */
+    #[ORM\Column]
+    private ?bool $block = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,5 +113,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function isBlock(): ?bool
+    {
+        return $this->block;
+    }
+
+    public function setBlock(bool $block): static
+    {
+        $this->block = $block;
+
+        return $this;
     }
 }
