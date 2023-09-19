@@ -2,6 +2,8 @@
 
 namespace App\Admin;
 
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\DateTimeImmutableType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
@@ -10,51 +12,41 @@ use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
-final class UserAdmin extends AbstractAdmin
+final class MessageAdmin extends AbstractAdmin
 {
     protected function configureRoutes(RouteCollectionInterface $collection): void 
     {
+        $collection->remove('create');
     }
 
     protected function configureFormFields(FormMapper $form): void
     {
         $form
+            ->add('username', TextType::class)
             ->add('email', TextType::class)
-            ->add('block', CheckboxType::class, [
-                'attr' => [
-                    'checked' => $this->getSubject()->isBlock()
-                ],
+            ->add('homepage', UrlType::class, [
                 'required' => false
             ])
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'ROLE_USER' => 'User',
-                    'ROLE_ADMIN' => 'Admin',
-                ],
-                'expanded' => true, // Display roles as checkboxes
-                'multiple' => true, // Allow multiple role selection
+            ->add('text', TextType::class)
+            ->add('coordination', CheckboxType::class, [
                 'required' => false
             ]);
-
-        if ($this->isCurrentRoute('create')) {
-            $form->add('password', PasswordType::class);
-        }
     }
 
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
+            ->add('username', TextType::class)
             ->add('email', TextType::class)
-            ->add('block', FieldDescriptionInterface::TYPE_BOOLEAN);
-            // ->add('roles', null, [
-            //     'template' => 'YourBundle:Admin:show_roles_as_checkboxes.html.twig', // Specify the template path
-            //     'label' => 'Roles',
-            //     'roles' => ['ROLE_USER', 'ROLE_ADMIN'], // Provide the available roles
-            //     'userRoles' => $this->getSubject()->getRoles(), // Provide the user's roles
-            // ]);
+            ->add('homepage', UrlType::class)
+            ->add('text', TextType::class)
+            ->add('coordination', CheckboxType::class);
+            // ->add('created_at', TextType::class);
     }
 
     /**
@@ -63,7 +55,9 @@ final class UserAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->addIdentifier('email')
-            ->add('block');
+            ->addIdentifier('id')
+            ->add('email')
+            ->add('created_at')
+            ->add('coordination');
     }
 }

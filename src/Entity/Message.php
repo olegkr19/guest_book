@@ -29,6 +29,19 @@ class Message
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column]
+    private ?bool $coordination = null;
+
+    /**
+     * This method determines how the entity is represented as a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getId();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +103,18 @@ class Message
     public function setCreatedAt(string $created_at): static
     {
         $this->created_at = new \DateTimeImmutable($created_at);   
+
+        return $this;
+    }
+
+    public function isCoordination(): ?bool
+    {
+        return $this->coordination;
+    }
+
+    public function setCoordination(bool $coordination): static
+    {
+        $this->coordination = $coordination;
 
         return $this;
     }

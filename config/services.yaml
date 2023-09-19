@@ -28,3 +28,7 @@ services:
         class: App\Admin\UserAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\User, manager_type: orm, label: User }
+    admin.message:
+        class: App\Admin\MessageAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Message, manager_type: orm, label: Message }
