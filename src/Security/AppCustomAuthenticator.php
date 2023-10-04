@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Exception\BlockedUserException;
+use App\Repository\UserRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,13 +24,26 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public $userRepository;
+
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator, 
+        UserRepository $userRepository
+    )
     {
+        $this->userRepository = $userRepository;
     }
 
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');
+
+        $user = $this->userRepository->findOneByEmail($email);
+
+        if (!$user || $user->isBlock()) {
+            // Redirect to the login page with an error message
+            throw new BlockedUserException('User is blocked');
+        }
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 

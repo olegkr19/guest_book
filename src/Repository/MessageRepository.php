@@ -57,7 +57,7 @@ class MessageRepository extends ServiceEntityRepository
 
         $conn = $entityManager->getConnection();
 
-        $where = 'id > 0';
+        $where = 'coordination = 1';
 
         $prepareData = [];
 
@@ -80,7 +80,7 @@ class MessageRepository extends ServiceEntityRepository
 
         $conn = $entityManager->getConnection();
 
-        $where = 'email = :email';
+        $where = 'email = :email AND coordination = 1';
 
         $prepareData = [
             'email' => $user->getUserIdentifier()

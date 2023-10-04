@@ -23,7 +23,7 @@ class MessageController extends AbstractController
 
         //check on auth user
         if (isset($user) && $user) {
-            $messages = $repository->findAllMessagesByUser($user);   
+            $messages = $repository->findAllMessagesByUser($user);
         }
 
         return $this->render('message/index.html.twig', [
@@ -57,6 +57,7 @@ class MessageController extends AbstractController
         $message->setHomepage($request->request->get('_homepage'));
         $message->setText($request->request->get('_text'));
         $message->setCreatedAt(date('Y-m-d H:i:s'));
+        $message->setCoordination(false);
 
         $entityManager->persist($message);
 
