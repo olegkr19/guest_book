@@ -50,7 +50,7 @@ class MessageRepository extends ServiceEntityRepository
     /**
     * @return array Returns an array
     */
-    public function findAllMessages(): array
+    public function findAllMessages(string $sortBy = 'id', string $sortOrder = 'desc'): array
     {
 
         $entityManager = $this->getEntityManager();
@@ -65,7 +65,7 @@ class MessageRepository extends ServiceEntityRepository
             SELECT id, username, email, homepage, text, created_at
             FROM message
             WHERE '. $where .'
-            ORDER BY id DESC
+            ORDER BY '. $sortBy .' '. $sortOrder .' 
         ';
 
         return $conn->prepare($sql)->executeQuery($prepareData)->fetchAllAssociative();
@@ -74,7 +74,7 @@ class MessageRepository extends ServiceEntityRepository
     /**
      * @return array Returns an array
      */
-    public function findAllMessagesByUser(User $user)
+    public function findAllMessagesByUser(User $user, string $sortBy = 'id', string $sortOrder = 'desc')
     {
         $entityManager = $this->getEntityManager();
 
@@ -90,7 +90,7 @@ class MessageRepository extends ServiceEntityRepository
             SELECT id, username, email, homepage, text, created_at
             FROM message
             WHERE '. $where .'
-            ORDER BY id DESC
+            ORDER BY '. $sortBy .' '. $sortOrder .' 
         ';
 
         return $conn->prepare($sql)->executeQuery($prepareData)->fetchAllAssociative();

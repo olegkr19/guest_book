@@ -8,26 +8,61 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 class MessageController extends AbstractController
 {
 
     #[Route('/', name: 'message_list')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
     {   
         $repository = $entityManager->getRepository(Message::class);
 
-        $messages = $repository->findAllMessages();
+        // Get the request parameters for sorting
+        $sortBy = $request->query->get('sort_by', 'id'); // Default sorting by id
+        $sortOrder = $request->query->get('sort_order', 'desc'); // Default sorting in descending order
+
+        $messages = $repository->findAllMessages($sortBy, $sortOrder);
 
         $user = $this->getUser();
 
         //check on auth user
         if (isset($user) && $user) {
-            $messages = $repository->findAllMessagesByUser($user);
+            $messages = $repository->findAllMessagesByUser($user, $sortBy, $sortOrder);
         }
 
+        $messages = $paginator->paginate(
+            $messages,
+            $request->query->getInt('page', 1), // Current page number
+            25 // Number of items per page
+        );
+
+        $totalItemCount = $messages->getTotalItemCount();
+        $itemsPerPage = $messages->getItemNumberPerPage();
+        $currentPage = $messages->getCurrentPageNumber();
+
+        $totalPages = ceil($totalItemCount / $itemsPerPage);
+
+        // Define how many page links to show on each side of the current page.
+        $sideLinks = 2;
+
+        $startPage = max(1, $currentPage - $sideLinks);
+        $endPage = min($totalPages, $currentPage + $sideLinks);
+
+        // dd($endPage);
+
         return $this->render('message/index.html.twig', [
-            'messages' => $messages
+            'messages' => $messages,
+            'query' => [
+                'sort_by' => $sortBy,
+                'sort_order' => $sortOrder,
+            ],
+            'startPage' => $startPage,
+            'endPage' => $endPage,
+            'totalItemCount' => $totalItemCount,
+            'itemsPerPage' => $itemsPerPage,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
         ]);
     }
 

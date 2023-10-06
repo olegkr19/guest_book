@@ -10,6 +10,54 @@
     .table {
         margin-top: 10px;
     }
+    .pagination {
+        margin-left: 10px;
+    }
+    .link {
+        text-decoration: none; /* Remove underline for the link */
+        color: #f5f5f5;
+    }
+    .icon {
+        text-align: center; /* Horizontal alignment */
+        vertical-align: middle; /* Vertical alignment */
+        white-space: nowrap; /* Prevent wrapping of text */
+        margin-top: 5px; /* Add padding as needed */
+    }
+    .link, .icon {
+        display: inline-block; /* or display: inline-block; */
+        float: right;
+    }
+    /* Style for the "fa-sort-up" icon */
+    .fa-sort-up::before {
+        color: #f5f5f5; /* Color for the up arrow, change to your preferred color */
+    }
+
+    /* Style for the "fa-sort-down" icon */
+    .fa-sort-down::before {
+        color: #f5f5f5; /* Color for the down arrow, change to your preferred color */
+    }
+    .page-item.active .page-link {
+        background-color: #000000;
+    }
+
+    .page-item .page-link {
+        color: #000000;
+        border-color: #000000;
+        text-decoration: none; /* Remove underline for the link */
+        padding: 5px 10px;
+        line-height: 1.5;
+    }
+
+    .page-item.active .page-link {
+        background-color: #000000;
+        border-color: #000000;
+    }
+
+    .page-item:hover .page-link {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
 </style>
 
 <div class="main">
@@ -20,23 +68,50 @@
     <table class="table table-hover table-bordered" 
     id="table"
     data-toggle="table"
-    data-pagination="true"
+    data-messages="true"
     data-show-refresh="true"
     data-show-toggle="true"
     data-show-columns="true"
     data-search="true"                          
-    data-show-pagination-switch="true"
+    data-show-messages-switch="true"
     data-id-field="message_id"
     {# data-page-list="[10, 25, 50, 100, ALL]" #}
     data-show-footer="false">
     <thead style="font-style: italic;" class="thead-dark">
         <tr>
         <th scope="col" data-field="message_id">#</th>
-        <th scope="col" data-field="username" data-sortable="true">Username</th>
-        <th scope="col" data-field="email" data-sortable="true">Email</th>
-        <th scope="col" data-field="homepage" data-sortable="true">Homepage</th>
-        <th scope="col" data-field="text" data-sortable="true">Text</th>
-        <th scope="col" data-field="datetime" data-sortable="true">Datetime</th>
+        <th scope="col" data-field="username">
+            Username
+        <a class="link" href="{{ path('message_list', { 'sort_by': 'username', 'sort_order': query.sort_order == 'asc' ? 'desc' : 'asc', 'page': currentPage }) }}">
+            {% if query.sort_by == 'username' %}
+                <i class="fa-solid fa-sort{% if query.sort_order == 'asc' %}-up{% else %}-down{% endif %} icon"></i>
+            {% else %}
+                <i class="fa-solid fa-sort icon"></i>
+            {% endif %}
+        </a>
+        </th>
+        <th scope="col" data-field="email">
+            Email
+            <a class="link" href="{{ path('message_list', { 'sort_by': 'email', 'sort_order': query.sort_order == 'asc' ? 'desc' : 'asc', 'page': currentPage }) }}">
+                {% if query.sort_by == 'email' %}
+                    <i class="fa-solid fa-sort{% if query.sort_order == 'asc' %}-up{% else %}-down{% endif %} icon"></i>
+                {% else %}
+                    <i class="fa-solid fa-sort icon"></i>
+                {% endif %}
+            </a>
+        </th>
+        <th scope="col" data-field="homepage">Homepage</th>
+        <th scope="col" data-field="text">Text</th>
+        <th scope="col" data-field="datetime">
+            Datetime
+            <a class="link" href="{{ path('message_list', { 'sort_by': 'created_at', 'sort_order': query.sort_order == 'asc' ? 'desc' : 'asc', 'page': currentPage }) }}">
+                {% if query.sort_by == 'created_at' %}
+                    <i class="fa-solid fa-sort{% if query.sort_order == 'asc' %}-up{% else %}-down{% endif %} icon"></i>
+                {% else %}
+                    <i class="fa-solid fa-sort icon"></i>
+                {% endif %}
+            </a>
+        </th>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <th scope="col">Actions</th>
         {% endif %}
@@ -77,6 +152,28 @@
         {% endif %}
     </tbody>
     </table>
+    <div>
+    <nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if currentPage > 1 %}
+            <li class="page-item"><a class="page-link" href="{{ path('message_list', query|merge({'page': 1})) }}">First</a></li>
+            <li class="page-item"><a class="page-link" href="{{ path('message_list', query|merge({'page': currentPage - 1})) }}">Previous</a></li>
+        {% endif %}
+
+        {% for page in range(startPage, endPage) %}
+            <li class="page-item {% if page == currentPage %} active{% endif %}">
+                <a class="page-link" href="{{ path('message_list', query|merge({'page': page})) }}">{{ page }}</a>
+            </li>
+        {% endfor %}
+
+        {% if currentPage < totalPages %}
+            <li class="page-item"><a class="page-link" href="{{ path('message_list', query|merge({'page': currentPage + 1})) }}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="{{ path('message_list', query|merge({'page': totalPages})) }}">Last</a></li>
+        {% endif %}
+    </ul>
+    </nav>
+</div>
+
 </div>
 <script>
 </script>
