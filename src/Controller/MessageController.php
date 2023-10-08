@@ -88,17 +88,20 @@ class MessageController extends AbstractController
         $message = new Message();
 
         // Get the user's input and the CAPTCHA code from the session
-        // $userInput = $request->request->get('_captcha');
-        // $captchaCode = $request->getSession()->get('captcha_code');
+        $userInput = $request->request->get('_captcha');
+        $captchaCode = $request->getSession()->get('captcha_code');
 
         // Compare the user's input to the stored CAPTCHA code
-        // if ($userInput !== $captchaCode) {
-            // CAPTCHA validation failed
-            // Handle the error or redirect back to the form
-        // }
+        if ($userInput !== $captchaCode) {
+            // CAPTCHA validation failed, handle the error
+            $this->addFlash('error', 'CAPTCHA code is incorrect. Please try again.');
+
+            // Redirect back to the form or take any other appropriate action
+            return $this->redirectToRoute('message_list');
+        }
 
         // Clear the CAPTCHA code from the session
-        // $request->getSession()->remove('captcha_code');
+        $request->getSession()->remove('captcha_code');
 
         $message->setUsername(htmlspecialchars($request->request->get('_username'), ENT_QUOTES, 'UTF-8'));
         $message->setEmail(htmlspecialchars($request->request->get('_email'), ENT_QUOTES, 'UTF-8'));

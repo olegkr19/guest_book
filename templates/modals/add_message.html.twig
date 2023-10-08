@@ -21,11 +21,11 @@
 					<label for="homepage" class="col-form-label">Homepage:</label>
 					<input type="url" class="form-control" id="homepage" name="_homepage" oninput="setCustomValidity('')">
 				</div>
-				{# <div class="form-group">
+				<div class="form-group">
 					<label for="captcha" class="col-form-label">Enter the CAPTCHA code:</label>
 					<img src="{{ path('captcha_generate') }}" alt="CAPTCHA Image">
-					<input type="text" class="form-control" id="captcha" name="_captcha" required oninvalid="this.setCustomValidity('Please Enter CAPTCHA')">
-				</div> #}
+					<input type="text" class="form-control" id="captcha" name="_captcha" required oninvalid="this.setCustomValidity('Please Enter CAPTCHA')" style="margin-top: 10px;">
+				</div>
 				<div class="form-group">
 					<label for="message-text" class="col-form-label">Text:</label>
 					<textarea class="form-control" id="message-text" name="_text" required oninput="validateInput(this)"></textarea>

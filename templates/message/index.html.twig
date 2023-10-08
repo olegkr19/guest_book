@@ -61,6 +61,13 @@
 </style>
 
 <div class="main">
+    {% if app.session.flashbag.has('error') %}
+        <div class="alert alert-danger">
+            {% for messageErr in app.session.flashbag.get('error') %}
+                {{ messageErr }}
+            {% endfor %}
+        </div>
+    {% endif %}
     {% include './modals/add_message.html.twig' %}
    <button type="button" class="btn add" data-toggle="modal" data-target="#addMessageModal" data-whatever="@mdo">
         <i class="fa-solid fa-plus fa-2xl" style="color: #000000;"></i>
