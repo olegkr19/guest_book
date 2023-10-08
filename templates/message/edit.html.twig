@@ -21,10 +21,31 @@
 		</div>
 		<div class="form-group col-md-6">
 			<label for="message-text" class="col-form-label">Text:</label>
-			<textarea class="form-control" id="message-text" name="_text" required>{{message.text}}</textarea>
+			<textarea class="form-control" id="message-text" name="_text" required oninput="validateInput(this)">{{message.text}}</textarea>
 		</div>
-		<div class="col-auto">
+		<div class="col-auto" style="margin-top: 10px;">
 			<button type="submit" class="btn btn-primary">Edit message</button>
 			<div></form>
 		</div>
+<script>
+    function validateInput(input) {
+        // Get the input value
+        var inputValue = input.value;
+
+		// Clear custom validity message
+		input.setCustomValidity("");
+
+		// Check if the input is empty
+		if (inputValue.trim() === '') {
+			// Set custom validity message
+            input.setCustomValidity("Please enter text.");
+		}
+
+        // Check if the input contains HTML tags
+        if (/<[^>]*>/g.test(inputValue)) {
+            // Set custom validity message
+            input.setCustomValidity("Please enter valid text without HTML tags.");
+        }
+    }
+</script>
 {% endblock %}

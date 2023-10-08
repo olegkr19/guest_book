@@ -45,6 +45,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $block = false;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $user_data = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +126,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBlock(bool $block): static
     {
         $this->block = $block;
+
+        return $this;
+    }
+
+    public function getUserData(): ?array
+    {
+        return $this->user_data;
+    }
+
+    public function setUserData(?array $user_data): static
+    {
+        $this->user_data = $user_data;
 
         return $this;
     }

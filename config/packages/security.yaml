@@ -42,7 +42,6 @@ security:
     role_hierarchy:
         ROLE_USER: [ROLE_USER]
         ROLE_ADMIN: [ROLE_ADMIN]
-
 when@test:
     security:
         password_hashers:

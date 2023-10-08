@@ -8,23 +8,32 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form action="{{ path('message_add') }}" method="post">
+				<form action="{{ path('message_add') }}" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label for="username" class="col-form-label">Username:</label>
 						<input type="text" class="form-control" id="username" name="_username" required>
 					</div>
 					<div class="form-group">
 						<label for="email" class="col-form-label">Email:</label>
-						<input class="form-control" type="email" id="email" name="_email" required="" oninvalid="this.setCustomValidity('Please Enter valid email')" oninput="setCustomValidity('')"></input>
+						<input class="form-control" type="email" id="email" name="_email" required="" oninvalid="this.setCustomValidity({{'Please Enter valid email' | trans}})" oninput="setCustomValidity('')"></input>
 				</div>
 				<div class="form-group">
 					<label for="homepage" class="col-form-label">Homepage:</label>
 					<input type="url" class="form-control" id="homepage" name="_homepage" oninput="setCustomValidity('')">
 				</div>
+				{# <div class="form-group">
+					<label for="captcha" class="col-form-label">Enter the CAPTCHA code:</label>
+					<img src="{{ path('captcha_generate') }}" alt="CAPTCHA Image">
+					<input type="text" class="form-control" id="captcha" name="_captcha" required oninvalid="this.setCustomValidity('Please Enter CAPTCHA')">
+				</div> #}
 				<div class="form-group">
 					<label for="message-text" class="col-form-label">Text:</label>
-					<textarea class="form-control" id="message-text" name="_text" required></textarea>
+					<textarea class="form-control" id="message-text" name="_text" required oninput="validateInput(this)"></textarea>
 				</div>
+				<div class="input-group">
+                    <label class="input-group-text" for="file">Browse</label>
+                    <input type="file" class="form-control" id="file" name="_file">
+                </div>
 			</div>
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -35,3 +44,24 @@
 </div>
 </div>
 </div>
+<script>
+    function validateInput(input) {
+        // Get the input value
+        var inputValue = input.value;
+
+		// Clear custom validity message
+		input.setCustomValidity("");
+
+		// Check if the input is empty
+		if (inputValue.trim() === '') {
+			// Set custom validity message
+            input.setCustomValidity("Please enter text.");
+		}
+
+        // Check if the input contains HTML tags
+        if (/<[^>]*>/g.test(inputValue)) {
+            // Set custom validity message
+            input.setCustomValidity("Please enter valid text without HTML tags.");
+        }
+    }
+</script>

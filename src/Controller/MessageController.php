@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag as ParameterBagParameterBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class MessageController extends AbstractController
 {
@@ -49,8 +51,6 @@ class MessageController extends AbstractController
         $startPage = max(1, $currentPage - $sideLinks);
         $endPage = min($totalPages, $currentPage + $sideLinks);
 
-        // dd($endPage);
-
         return $this->render('message/index.html.twig', [
             'messages' => $messages,
             'query' => [
@@ -87,16 +87,35 @@ class MessageController extends AbstractController
     {
         $message = new Message();
 
-        $message->setUsername($request->request->get('_username'));
-        $message->setEmail($request->request->get('_email'));
-        $message->setHomepage($request->request->get('_homepage'));
-        $message->setText($request->request->get('_text'));
+        // Get the user's input and the CAPTCHA code from the session
+        // $userInput = $request->request->get('_captcha');
+        // $captchaCode = $request->getSession()->get('captcha_code');
+
+        // Compare the user's input to the stored CAPTCHA code
+        // if ($userInput !== $captchaCode) {
+            // CAPTCHA validation failed
+            // Handle the error or redirect back to the form
+        // }
+
+        // Clear the CAPTCHA code from the session
+        // $request->getSession()->remove('captcha_code');
+
+        $message->setUsername(htmlspecialchars($request->request->get('_username'), ENT_QUOTES, 'UTF-8'));
+        $message->setEmail(htmlspecialchars($request->request->get('_email'), ENT_QUOTES, 'UTF-8'));
+        $message->setHomepage(htmlspecialchars($request->request->get('_homepage'), ENT_QUOTES, 'UTF-8'));
+        $message->setText(htmlspecialchars($request->request->get('_text'), ENT_QUOTES, 'UTF-8'));
         $message->setCreatedAt(date('Y-m-d H:i:s'));
         $message->setCoordination(false);
 
         $entityManager->persist($message);
 
         $entityManager->flush();
+
+        $messageFile = new MessageFileController();
+
+        $parameterBag = new ParameterBagParameterBag();
+
+        $messageFile->uploadFile($request, $message, $entityManager, $parameterBag);
 
         //Add a flash message
         $this->addFlash('success', 'Your message has been added');
@@ -115,10 +134,10 @@ class MessageController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $message->setUsername($request->request->get('_username'));
-        $message->setEmail($request->request->get('_email'));
-        $message->setHomepage($request->request->get('_homepage'));
-        $message->setText($request->request->get('_text'));
+        $message->setUsername(htmlspecialchars($request->request->get('_username'), ENT_QUOTES, 'UTF-8'));
+        $message->setEmail(htmlspecialchars($request->request->get('_email'), ENT_QUOTES, 'UTF-8'));
+        $message->setHomepage(htmlspecialchars($request->request->get('_homepage'), ENT_QUOTES, 'UTF-8'));
+        $message->setText(htmlspecialchars($request->request->get('_text'), ENT_QUOTES, 'UTF-8'));
 
         $entityManager->persist($message);
 

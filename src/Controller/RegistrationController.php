@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Jenssegers\Agent\Agent;
 
 class RegistrationController extends AbstractController
 {
@@ -31,6 +32,11 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $user->setUserData([
+                'ip' => $request->getClientIp(),
+                'browser' => $this->getUserBrowser($request),
+            ]);
+
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
@@ -45,5 +51,29 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    public function getUserBrowser(Request $request)
+    {
+        // Get the user agent string from the request headers
+        $userAgentString = $request->headers->get('User-Agent');
+
+        // Create an instance of the Agent class
+        $agent = new Agent();
+
+        // Set the user agent string for parsing
+        $agent->setUserAgent($userAgentString);
+
+        // Get browser-related information
+        $browserName = $agent->browser();
+        $browserVersion = $agent->version($browserName);
+        $browserPlatform = $agent->platform();
+
+        // Return browser information
+        return [
+            'name' => $browserName,
+            'version' => $browserVersion,
+            'platform' => $browserPlatform,
+        ];
     }
 }
