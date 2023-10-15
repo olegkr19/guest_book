@@ -18,7 +18,7 @@ class MessageFile
 
     #[ORM\ManyToOne(inversedBy: 'id', cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    private ?Message $message_id = null;
+    private ?Message $message = null;
 
     public function getId(): ?int
     {
@@ -27,12 +27,12 @@ class MessageFile
 
     public function getMessageId(): ?Message
     {
-        return $this->message_id;
+        return $this->message;
     }
 
-    public function setMessageId(?Message $message_id): static
+    public function setMessageId(?Message $message): static
     {
-        $this->message_id = $message_id;
+        $this->message = $message;
 
         return $this;
     }

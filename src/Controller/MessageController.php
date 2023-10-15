@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Message;
+use App\Entity\MessageFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag as ParameterBagParameterBag;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MessageController extends AbstractController
 {
@@ -66,7 +67,7 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/messages/{id}', name: 'message_card')]
+    #[Route('/messages/card/{id}', name: 'message_show_card')]
     public function findOne($id, EntityManagerInterface $entityManager): Response
     {
         $repository = $entityManager->getRepository(Message::class);
@@ -77,13 +78,42 @@ class MessageController extends AbstractController
             throw $this->createNotFoundException();
         }
 
+        $fileMessageRepository = $entityManager->getRepository(MessageFile::class);
+
+        $filesByMessage = $fileMessageRepository->findFilesByMessageId($id);
+
+        return $this->render('message/show.html.twig', [
+            'message' => $message,
+            'files' => $filesByMessage
+        ]);
+    }
+
+    #[Route('/messages/edit_card/{id}', name: 'message_edit_card')]
+    public function cardForEdit($id, EntityManagerInterface $entityManager): Response
+    {
+        $repository = $entityManager->getRepository(Message::class);
+
+        $message = $repository->find($id);
+
+        if (!$message) {
+            throw $this->createNotFoundException();
+        }
+
+        $fileMessageRepository = $entityManager->getRepository(MessageFile::class);
+
+        $filesByMessage = $fileMessageRepository->findFilesByMessageId($id);
+
         return $this->render('message/edit.html.twig', [
-            'message' => $message
+            'message' => $message,
+            'files' => $filesByMessage
         ]);
     }
 
     #[Route('/messages/add', name: 'message_add', priority: 2)]
-    public function add(Request $request, EntityManagerInterface $entityManager): Response
+    public function add(Request $request, 
+    EntityManagerInterface $entityManager,
+    ValidatorInterface $validator
+    ): Response
     {
         $message = new Message();
 
@@ -108,7 +138,7 @@ class MessageController extends AbstractController
         $message->setHomepage(htmlspecialchars($request->request->get('_homepage'), ENT_QUOTES, 'UTF-8'));
         $message->setText(htmlspecialchars($request->request->get('_text'), ENT_QUOTES, 'UTF-8'));
         $message->setCreatedAt(date('Y-m-d H:i:s'));
-        $message->setCoordination(false);
+        $message->setCoordination(true);
 
         $entityManager->persist($message);
 
@@ -116,18 +146,39 @@ class MessageController extends AbstractController
 
         $messageFile = new MessageFileController();
 
-        $parameterBag = new ParameterBagParameterBag();
+        $file = $messageFile->getFile($request);
 
-        $messageFile->uploadFile($request, $message, $entityManager, $parameterBag);
+        if ($file) {
+
+            // Validate the file type using Symfony's File constraint
+            $constraints = new File([
+                'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                'mimeTypesMessage' => 'Please upload a valid image file (JPEG, PNG, GIF).',
+            ]);
+    
+            $errors = $validator->validate($file, $constraints);
+    
+            if (count($errors) > 0) {
+                $this->addFlash('error', 'Not an image was uploaded. Please upload a valid image file (JPEG, PNG, GIF).');
+    
+                return $this->redirectToRoute('message_list');
+            }
+        }
+
+        $messageFile->uploadFile($request, $message, $entityManager);
 
         //Add a flash message
-        $this->addFlash('success', 'Your message has been added');
+        $this->addFlash('success', 'Your message has been added. ');
 
         return $this->redirectToRoute('message_list');
     }
 
     #[Route('/messages/edit/{id}', name: 'message_edit')]
-    public function edit($id, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit($id, 
+    Request $request, 
+    EntityManagerInterface $entityManager,
+    ValidatorInterface $validator
+    ): Response
     {
         $repository = $entityManager->getRepository(Message::class);
 
@@ -145,6 +196,29 @@ class MessageController extends AbstractController
         $entityManager->persist($message);
 
         $entityManager->flush();
+
+        $messageFile = new MessageFileController();
+
+        $file = $messageFile->getFile($request);
+
+        if ($file) {
+
+            // Validate the file type using Symfony's File constraint
+            $constraints = new File([
+                'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                'mimeTypesMessage' => 'Please upload a valid image file (JPEG, PNG, GIF).',
+            ]);
+    
+            $errors = $validator->validate($file, $constraints);
+    
+            if (count($errors) > 0) {
+                $this->addFlash('error', 'Not an image was uploaded. Please upload a valid image file (JPEG, PNG, GIF).');
+    
+                return $this->redirectToRoute('message_list');
+            }
+        }
+
+        $messageFile->uploadFile($request, $message, $entityManager);
 
         //Add a flash message
         $this->addFlash('success', 'Your message has been updated');

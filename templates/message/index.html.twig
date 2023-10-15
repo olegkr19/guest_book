@@ -120,7 +120,7 @@
             </a>
         </th>
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <th scope="col">Actions</th>
+        <th scope="col" style="width: 10%;">Actions</th>
         {% endif %}
         </tr>
     </thead>
@@ -136,9 +136,14 @@
                 <td>{{ message.created_at }}</td>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <td>
-                        <div class="btn-group" role="group">
-                            <form action="{{ path('message_card', {"id": message.id})}}" method="get">
+                        <div class="btn-group" role="group" style="float:right;">
+                            <form action="{{ path('message_show_card', {"id": message.id})}}" method="get">
                                 <button type="submit" class="btn">
+                                    <i class="fa-solid fa-eye fa-xl" style="color: #3c3939;"></i>
+                                </button>
+                            </form> 
+                            <form action="{{ path('message_edit_card', {"id": message.id})}}" method="get">
+                                <button type="submit" class="btn" style="margin-left: 10px;">
                                     <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
                                 </button>
                             </form> 

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editing an Existing Message
+{% endblock %}
+
+{% block body %}
+
+	<div style="font-style: italic;">
+        <div class="form-group col-md-4">
+            <label for="username" class="col-form-label">Username: {{message.username}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="email" class="col-form-label">Email: {{message.email}}</label>
+		</div>
+		<div class="form-group col-md-4">
+			<label for="homepage" class="col-form-label">Homepage: {{message.homepage ?: '-'}}</label>
+		</div>
+		<div class="form-group col-md-6">
+			<label for="message-text" class="col-form-label">Text: {{message.text}}</label>
+		</div>
+		{% include "message/files.html.twig" %}
+	</div>
+<script>
+</script>
+{% endblock %}

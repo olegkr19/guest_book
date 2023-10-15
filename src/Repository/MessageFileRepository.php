@@ -45,4 +45,25 @@ class MessageFileRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+    * @return array Returns an array
+    */
+    public function findFilesByMessageId(int $messageId): array
+    {
+
+        $entityManager = $this->getEntityManager();
+
+        $conn = $entityManager->getConnection();
+
+        $sql = '
+            SELECT id, filename
+            FROM message_file
+            WHERE message_id = :message_id
+        ';
+
+        return $conn->prepare($sql)->executeQuery([
+            'message_id' => $messageId,
+        ])->fetchAllAssociative();
+    }
 }

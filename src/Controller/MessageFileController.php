@@ -6,7 +6,6 @@ use App\Entity\Message;
 use App\Entity\MessageFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,14 +21,18 @@ class MessageFileController extends AbstractController
         ]);
     }
 
+    public function getFile( Request $request)
+    {
+        return $request->files->get('_file'); // Assuming your file input is named 'file'
+    }
+
     public function uploadFile(
         Request $request, 
         Message $message, 
-        EntityManagerInterface $entityManager,
-        ParameterBagInterface $parameterBag
+        EntityManagerInterface $entityManager
     )
     {
-        $file = $request->files->get('_file'); // Assuming your file input is named 'file'
+        $file = $this->getFile($request);
 
         if ($file) {
 
@@ -62,5 +65,27 @@ class MessageFileController extends AbstractController
         }
 
         // Redirect or render a response as needed
+    }
+
+    #[Route('/message-file/delete/{id}', name: 'file_delete')]
+    public function delete($id, EntityManagerInterface $entityManager): Response
+    {
+        $repository = $entityManager->getRepository(MessageFile::class);
+
+        $messageFile = $repository->find($id);
+
+        if ($messageFile) {
+        
+            $entityManager->remove($messageFile);
+        
+            $entityManager->flush();
+    
+            //Add a flash message
+            $this->addFlash('success', 'Your file has been deleted');
+        }
+
+        return $this->redirectToRoute('message_edit_card', [
+            'id' => $messageFile->getMessageId()->getId()
+        ]);
     }
 }
