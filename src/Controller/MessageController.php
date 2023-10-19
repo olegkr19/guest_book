@@ -84,7 +84,8 @@ class MessageController extends AbstractController
 
         return $this->render('message/show.html.twig', [
             'message' => $message,
-            'files' => $filesByMessage
+            'files' => $filesByMessage,
+            'delete_image' => false
         ]);
     }
 
@@ -105,7 +106,8 @@ class MessageController extends AbstractController
 
         return $this->render('message/edit.html.twig', [
             'message' => $message,
-            'files' => $filesByMessage
+            'files' => $filesByMessage,
+            'delete_image' => true
         ]);
     }
 

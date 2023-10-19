@@ -86,8 +86,8 @@
     data-show-footer="false">
     <thead style="font-style: italic;" class="thead-dark">
         <tr>
-        <th scope="col" data-field="message_id">#</th>
-        <th scope="col" data-field="username">
+        <th class="col-1" scope="col" data-field="message_id">#</th>
+        <th class="col-2" scope="col" data-field="username">
             Username
         <a class="link" href="{{ path('message_list', { 'sort_by': 'username', 'sort_order': query.sort_order == 'asc' ? 'desc' : 'asc', 'page': currentPage }) }}">
             {% if query.sort_by == 'username' %}
@@ -97,7 +97,7 @@
             {% endif %}
         </a>
         </th>
-        <th scope="col" data-field="email">
+        <th class="col-2" scope="col" data-field="email">
             Email
             <a class="link" href="{{ path('message_list', { 'sort_by': 'email', 'sort_order': query.sort_order == 'asc' ? 'desc' : 'asc', 'page': currentPage }) }}">
                 {% if query.sort_by == 'email' %}
@@ -107,9 +107,9 @@
                 {% endif %}
             </a>
         </th>
-        <th scope="col" data-field="homepage">Homepage</th>
-        <th scope="col" data-field="text">Text</th>
-        <th scope="col" data-field="datetime">
+        <th class="col-2" scope="col" data-field="homepage">Homepage</th>
+        <th class="col-3" scope="col" data-field="text">Text</th>
+        <th class="col-2" scope="col" data-field="datetime">
             Datetime
             <a class="link" href="{{ path('message_list', { 'sort_by': 'created_at', 'sort_order': query.sort_order == 'asc' ? 'desc' : 'asc', 'page': currentPage }) }}">
                 {% if query.sort_by == 'created_at' %}

@@ -2,19 +2,15 @@
     <style>
         .image-container {
             display: flex;
-            justify-content: space-between;
             align-items: flex-start; /* Align items to the top */
             position: relative;
-            {# gap: 20px; #}
         }
         .image-container img {
             display: flex;
             width: 250px;
             height: 200px;
             float: left;
-        }
-        .circle-icon {
-            margin-right: 10px;
+            margin-left: 15px;
         }
         .custom-button {
             background-color: rgb(248 250 252); /* Set your desired background color */
@@ -23,30 +19,23 @@
         }
         #remove-image-link {
             cursor: pointer;
-            text-decoration: underline;
-            color: #337ab7;
         }
     </style>
     <div class="form-group col-md-6">
-        {# <label for="message-text" class="col-form-label">File: </label> #}
+        {# <label for="message-text" class="col-form-label">Files: </label> #}
         <div class="image-container">
         {% for file in files %}
             {% if file.filename %}
                 {% set imageFolder = 'images/message_images/' %}
                 {% set imageName = file.filename %}
                 <img src="{{ asset(imageFolder ~ imageName) }}" id="image"/>
-                <div class="circle-icon">
-                    {# <form action="{{ path('file_delete', {"id": file.id})}}" method="get">     #}
-                        {# <button id="remove-image-button" type="submit" class="custom-button btn">
-                            <i class="fa-regular fa-circle-xmark fa-2xl" style="color: #e72323"></i>
-                        </button> #}
-                        {# <a href="#" id="remove-image-link">Remove Image</a> #}
+                {% if delete_image %}
+                    <div class="circle-icon">
                         <a href="{{ path('file_delete', {"id": file.id})}}" id="remove-image-link">
-                        Remove Image
-                        {# <i class="fa-regular fa-circle-xmark fa-2xl" style="color: #e72323"></i> #}
+                            <i class="fa-regular fa-circle-xmark fa-2xl" style="color: #e72323"></i>
                         </a>
-                    {# </form> #}
-                </div>
+                    </div>
+                {% endif %}
             {% endif %}
         {% endfor %}
         </div>

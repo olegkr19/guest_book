@@ -57,17 +57,12 @@ class MessageRepository extends ServiceEntityRepository
 
         $conn = $entityManager->getConnection();
 
-        $sql = '
-            SELECT id, username, email, homepage, text, created_at
-            FROM message
-            WHERE coordination = 1
-            ORDER BY :sortBy :sortOrder
-        ';
+        $sql = 'SELECT id, username, email, homepage, text, created_at FROM message WHERE coordination = 1 ORDER BY ' . $sortBy . ' ' . $sortOrder;
 
-        return $conn->prepare($sql)->executeQuery([
-            'sortBy' => $sortBy,
-            'sortOrder' => $sortOrder,
-        ])->fetchAllAssociative();
+        // Create a prepared statement
+        $statement = $conn->prepare($sql);
+
+        return $statement->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -89,11 +84,8 @@ class MessageRepository extends ServiceEntityRepository
             SELECT id, username, email, homepage, text, created_at
             FROM message
             WHERE '. $where .'
-            ORDER BY :sortBy :sortOrder 
-        ';
-
-        $prepareData['sortBy'] = $sortBy;
-        $prepareData['sortOrder'] = $sortOrder;
+            ORDER BY ' . $sortBy . ' ' . $sortOrder
+        ;
 
         return $conn->prepare($sql)->executeQuery($prepareData)->fetchAllAssociative();
     }
